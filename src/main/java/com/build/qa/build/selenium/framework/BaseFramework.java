@@ -15,6 +15,7 @@ import org.junit.Rule;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -29,6 +30,7 @@ public abstract class BaseFramework {
 	private static final String CONFIG_FILE = "./conf/automation.properties";
 	private static final String DRIVER_FIREFOX = "firefox";
 	private static final String DRIVER_CHROME = "chrome";
+	private static final String DRIVER_EDGE = "edge";
 	private static Properties configuration;
 
 	@Rule
@@ -57,6 +59,10 @@ public abstract class BaseFramework {
 			capabilities = DesiredCapabilities.firefox();
 			WebDriverManager.firefoxdriver().setup();
 			driver = new FirefoxDriver(capabilities);
+		} else if (DRIVER_EDGE.equalsIgnoreCase(configuration.getProperty("BROWSER"))) {
+			capabilities = DesiredCapabilities.edge();
+			WebDriverManager.edgedriver().setup();
+			driver = new EdgeDriver(capabilities);
 		}
 		// Define fluent wait
 		wait = new FluentWait<WebDriver>(driver).withTimeout(15, TimeUnit.SECONDS).pollingEvery(500, TimeUnit.MILLISECONDS)
@@ -71,10 +77,10 @@ public abstract class BaseFramework {
 		return configuration.getProperty(config);
 	}
 
-	@After
-	public void tearDownAfter() {
-		LOG.info("Quitting driver.");
-		driver.quit();
-		driver = null;
-	}
+//	@After
+//	public void tearDownAfter() {
+//		LOG.info("Quitting driver.");
+//		driver.quit();
+//		driver = null;
+//	}
 }
