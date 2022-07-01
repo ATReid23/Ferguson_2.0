@@ -55,6 +55,7 @@ public abstract class BaseFramework {
 			driver = new ChromeDriver(capabilities);
 		} else if (DRIVER_FIREFOX.equalsIgnoreCase(configuration.getProperty("BROWSER"))) {
 			capabilities = DesiredCapabilities.firefox();
+			WebDriverManager.firefoxdriver().setup();
 			driver = new FirefoxDriver(capabilities);
 		}
 		// Define fluent wait

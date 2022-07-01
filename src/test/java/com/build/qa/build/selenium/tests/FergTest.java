@@ -1,9 +1,22 @@
 package com.build.qa.build.selenium.tests;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.build.qa.build.selenium.framework.BaseFramework;
 import com.build.qa.build.selenium.pageobjects.homepage.HomePage;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
+
+import static java.time.Duration.ofSeconds;
 
 public class FergTest extends BaseFramework {
 
@@ -28,7 +41,20 @@ public class FergTest extends BaseFramework {
 	 */
 	@Test
 	public void searchForProductLandsOnCorrectProduct() {
-		// TODO: Implement this test
+
+		driver.get(getConfiguration("HOMEPAGE"));
+		HomePage homePage = new HomePage(driver, wait);
+		JavascriptExecutor js = (JavascriptExecutor)driver;
+
+
+		js.executeScript("arguments[0].click();", homePage.searchBox);
+		homePage.searchBox.sendKeys("Moen m6702bn");
+		js.executeScript("arguments[0].click();", homePage.magnify);
+
+		softly.assertThat(homePage.onHomePage())
+				.as("The page has Part #M6702BN present")
+				.isTrue();
+
 	}
 
 	/**
@@ -40,7 +66,35 @@ public class FergTest extends BaseFramework {
 	 */
 	@Test
 	public void addProductToCartFromCategoryDrop() {
-		// TODO: Implement this test
+
+		driver.get(getConfiguration("HOMEPAGE"));
+		driver.manage().window().maximize();
+
+		HomePage homePage = new HomePage(driver, wait);
+		JavascriptExecutor js = (JavascriptExecutor)driver;
+
+
+		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", homePage.bRoomSinkFaucets);
+		js.executeScript("arguments[0].click();", homePage.bRoomSinkFaucets);
+
+		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", homePage.secondSinkChoice);
+		String faucetName = homePage.secondSinkTitle.getText();
+
+		js.executeScript("arguments[0].click();", homePage.addThisType2Cart);
+
+		WebDriverWait wait = new WebDriverWait(driver, 5);
+		wait.until(ExpectedConditions.elementToBeClickable(homePage.popUpCartAdd));
+		js.executeScript("arguments[0].click();", homePage.popUpCartAdd);
+
+		wait.until(ExpectedConditions.elementToBeClickable(homePage.cart));
+		js.executeScript("arguments[0].click();", homePage.cart);
+		String purchaseName = homePage.cartPurchase.getText();
+
+		System.out.println(faucetName);
+		System.out.println(purchaseName);
+
+		Assert.assertEquals(faucetName, purchaseName);
+
 	}
 
 	/**
